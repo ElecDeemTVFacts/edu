@@ -3,372 +3,159 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Základy elektrických veličin – Interaktivně & Moderně</title>
+<title>Základy elektrické veličiny – Interaktivní graf</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
-
   :root {
-    --clr-primary: #0057e7;
-    --clr-primary-dark: #003d99;
-    --clr-bg-light: #f0f4ff;
+    --clr-bg: #f4f4f9;
+    --clr-text: #222;
+    --clr-primary: #007acc;
+    --clr-secondary: #005f99;
+    --clr-table-header: #004466;
+    --clr-volt: #d9534f;
+    --clr-current: #5bc0de;
+    --clr-resistance: #5cb85c;
     --clr-bg-dark: #121212;
-    --clr-text-light: #222;
     --clr-text-dark: #eee;
-    --clr-correct: #16a34a;
-    --clr-incorrect: #dc2626;
-    --transition: 0.3s ease;
   }
-
-  /* Tmavý režim */
+  body {
+    background: var(--clr-bg);
+    color: var(--clr-text);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 1rem 1.5rem;
+  }
   body.dark {
     background: var(--clr-bg-dark);
     color: var(--clr-text-dark);
   }
-  body.dark header, body.dark footer {
-    background: var(--clr-primary-dark);
-    color: var(--clr-text-dark);
-  }
-  body.dark table, body.dark .panel, body.dark .quiz {
-    background: #1e1e1e;
-    color: var(--clr-text-dark);
-    box-shadow: none;
-  }
-  body.dark th {
-    background: #333;
-  }
-  body.dark .accordion {
-    background: var(--clr-primary-dark);
-    color: var(--clr-text-dark);
-  }
-  body.dark .accordion:hover, body.dark .accordion.active {
-    background: #002466;
-  }
-  body.dark input, body.dark select {
-    background: #121212;
-    color: var(--clr-text-dark);
-    border-color: #555;
-  }
-  body.dark input.correct {
-    background: #064e03;
-    border-color: #16a34a;
-    color: #d1f5d3;
-  }
-  body.dark input.incorrect {
-    background: #4c0c0c;
-    border-color: #dc2626;
-    color: #fddede;
-  }
-
-  /* Reset & base */
-  *, *::before, *::after {
-    box-sizing: border-box;
-  }
-  body {
-    font-family: 'Inter', sans-serif;
-    margin: 0;
-    background: var(--clr-bg-light);
-    color: var(--clr-text-light);
-    line-height: 1.6;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
-
-  header, footer {
-    background: var(--clr-primary);
-    color: white;
-    padding: 25px 15px;
-    text-align: center;
-    user-select: none;
-    box-shadow: 0 3px 8px rgb(0 0 0 / 0.2);
-  }
-  footer {
-    font-size: 0.85rem;
-    margin-top: auto;
-  }
-  header h1 {
-    margin: 0;
-    font-weight: 700;
-    font-size: 2.3rem;
-  }
-
-  main {
-    max-width: 960px;
-    margin: 40px auto;
-    padding: 0 20px 60px;
-  }
-
-  h2 {
-    color: var(--clr-primary);
-    margin-top: 50px;
-    margin-bottom: 15px;
-    border-bottom: 3px solid var(--clr-primary);
-    padding-bottom: 8px;
-    font-weight: 700;
-  }
-
-  /* Tabulka */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 25px;
-    box-shadow: 0 0 20px rgb(0 0 0 / 0.05);
-    border-radius: 10px;
-    overflow: hidden;
-  }
-  th, td {
-    padding: 15px 10px;
-    border-bottom: 1px solid #cbd5e1;
-    text-align: center;
-    font-weight: 600;
-    background: #e9f0ff;
-    transition: background var(--transition);
-  }
-  th {
-    background: #cbd5e1;
-  }
-  tr:hover td {
-    background: #d6e0ff;
-  }
-
-  /* Accordion */
-  .accordion {
-    cursor: pointer;
-    background: var(--clr-primary);
-    color: white;
-    padding: 18px 25px;
-    margin: 10px 0 4px;
-    border: none;
-    text-align: left;
-    font-size: 1.15rem;
-    border-radius: 10px;
-    user-select: none;
-    transition: background-color var(--transition);
+  header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 1rem;
   }
-  .accordion:hover, .accordion.active {
-    background: var(--clr-primary-dark);
+  h1 {
+    margin: 0;
+    font-size: 1.8rem;
   }
-  .accordion:after {
-    content: '\u25BC'; /* down arrow */
-    font-size: 1rem;
-    transition: transform var(--transition);
-  }
-  .accordion.active:after {
-    transform: rotate(180deg);
-  }
-
-  .panel {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height var(--transition) ease-out, padding var(--transition) ease;
-    background: #dbe9ff;
-    border-radius: 0 0 10px 10px;
-    padding: 0 25px;
-    font-size: 1.05rem;
-    color: #222;
-  }
-  .panel.open {
-    padding: 18px 25px 20px;
-  }
-
-  /* Quiz */
-  .quiz {
-    background: white;
-    padding: 30px 40px;
-    border-radius: 15px;
-    box-shadow: 0 6px 20px rgb(0 87 231 / 0.25);
-    margin-top: 30px;
-  }
-  .quiz p {
-    font-weight: 700;
-    margin: 20px 0 8px;
-  }
-  .quiz input[type="text"], .quiz select {
-    font-size: 1rem;
-    padding: 12px 15px;
-    width: 100%;
-    max-width: 320px;
-    border: 2px solid #cbd5e1;
-    border-radius: 8px;
-    transition: border-color var(--transition), background var(--transition), color var(--transition);
-  }
-  .quiz input[type="text"]:focus, .quiz select:focus {
-    border-color: var(--clr-primary);
-    outline: none;
-  }
-  .btn {
+  button#toggleDark {
     background: var(--clr-primary);
     color: white;
     border: none;
-    padding: 16px 35px;
-    font-size: 1.15rem;
-    border-radius: 8px;
-    cursor: pointer;
-    margin-top: 25px;
-    box-shadow: 0 5px 18px rgb(0 87 231 / 0.4);
-    transition: background var(--transition);
-  }
-  .btn:hover:not(:disabled) {
-    background: var(--clr-primary-dark);
-  }
-  .btn:disabled {
-    background: #aaa;
-    cursor: not-allowed;
-    box-shadow: none;
-  }
-  .result {
-    margin-top: 28px;
-    font-size: 1.3rem;
-    font-weight: 700;
-  }
-
-  /* Feedback u odpovědí */
-  input.correct, select.correct {
-    border-color: var(--clr-correct);
-    background: #dcfce7;
-  }
-  input.incorrect, select.incorrect {
-    border-color: var(--clr-incorrect);
-    background: #fee2e2;
-  }
-
-  /* Vyhledávání tabulky */
-  #filterInput {
-    margin-bottom: 15px;
+    padding: 0.4rem 1rem;
     font-size: 1rem;
-    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  button#toggleDark:hover {
+    background: var(--clr-secondary);
+  }
+  main {
+    max-width: 900px;
+    margin: auto;
+  }
+  table {
     width: 100%;
-    max-width: 300px;
-    border: 2px solid #cbd5e1;
-    border-radius: 8px;
-    transition: border-color var(--transition);
+    border-collapse: collapse;
+    margin-bottom: 1.5rem;
   }
-  #filterInput:focus {
-    border-color: var(--clr-primary);
-    outline: none;
+  thead {
+    background: var(--clr-table-header);
+    color: white;
   }
-
-  /* Ohmova kalkulačka */
-  .calc {
+  th, td {
+    padding: 0.6rem 0.8rem;
+    border: 1px solid #ccc;
+    text-align: center;
+  }
+  body.dark table thead {
+    background: #004050;
+  }
+  input[type="range"] {
+    width: 100%;
+    margin: 0.3rem 0 1rem;
+  }
+  label {
+    font-weight: 600;
+  }
+  .slider-group {
+    margin-bottom: 1.2rem;
+  }
+  #graphContainer {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  canvas {
+    max-width: 100%;
+    border: 1px solid #aaa;
     background: white;
-    padding: 30px 40px;
-    border-radius: 15px;
-    box-shadow: 0 6px 20px rgb(0 87 231 / 0.25);
-    margin-top: 50px;
+    border-radius: 6px;
   }
-  .calc h3 {
-    margin-bottom: 20px;
-    color: var(--clr-primary);
+  body.dark canvas {
+    background: #222;
+    border-color: #555;
+  }
+  .calc {
+    border: 1px solid #ddd;
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 3rem;
+    background: #fff;
+  }
+  body.dark .calc {
+    background: #1a1a1a;
+    border-color: #333;
   }
   .calc label {
     display: block;
-    margin-top: 15px;
-    font-weight: 700;
+    margin: 0.5rem 0 0.2rem;
   }
-  .calc input {
-    margin-top: 8px;
-    padding: 10px 15px;
-    font-size: 1rem;
+  .calc input[type="number"] {
     width: 100%;
-    max-width: 280px;
-    border-radius: 8px;
-    border: 2px solid #cbd5e1;
-    transition: border-color var(--transition);
-  }
-  .calc input:focus {
-    border-color: var(--clr-primary);
-    outline: none;
+    padding: 0.3rem 0.5rem;
+    font-size: 1rem;
   }
   .calc button {
-    margin-top: 25px;
-    padding: 14px 30px;
-    font-size: 1.15rem;
-    border-radius: 8px;
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
     background: var(--clr-primary);
     color: white;
     border: none;
+    border-radius: 4px;
     cursor: pointer;
-    box-shadow: 0 5px 18px rgb(0 87 231 / 0.4);
-    transition: background var(--transition);
   }
   .calc button:hover {
-    background: var(--clr-primary-dark);
+    background: var(--clr-secondary);
   }
-  .calc .calc-result {
-    margin-top: 20px;
-    font-size: 1.2rem;
+  .calc-result {
+    margin-top: 1rem;
     font-weight: 700;
-    color: var(--clr-primary-dark);
+    color: var(--clr-primary);
   }
-
-  /* Toggle Dark Mode */
-  #toggleDark {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: var(--clr-primary);
-    border: none;
-    padding: 10px 15px;
-    border-radius: 50px;
-    cursor: pointer;
-    color: white;
-    font-weight: 700;
-    box-shadow: 0 4px 15px rgb(0 87 231 / 0.5);
-    transition: background var(--transition);
-    z-index: 999;
-  }
-  #toggleDark:hover {
-    background: var(--clr-primary-dark);
-  }
-
-  /* Responsivita */
-  @media(max-width: 600px) {
-    h2 {
-      font-size: 1.4rem;
-    }
-    header h1 {
-      font-size: 1.6rem;
-    }
-    main {
-      margin: 30px 15px 60px;
-    }
-    .quiz, .calc {
-      padding: 25px 20px;
-    }
-    input, select {
-      max-width: 100%;
-    }
-  }
-
 </style>
 </head>
 <body>
-
-<button id="toggleDark" aria-pressed="false" aria-label="Přepnout tmavý režim">🌙 Tmavý režim</button>
-
 <header>
-  <h1>Základy elektrických veličin</h1>
+  <h1>Základy elektrické veličiny</h1>
+  <button id="toggleDark" aria-pressed="false" aria-label="Přepnout tmavý režim">🌙 Tmavý režim</button>
 </header>
 
 <main>
-
-  <h2>Tabulka základních veličin</h2>
-
-  <input type="text" id="filterInput" placeholder="Hledej veličinu..." aria-label="Vyhledávání v tabulce základních veličin" />
-
-  <table aria-label="Základní elektrické veličiny" id="unitsTable">
-    <thead>
-      <tr>
-        <th>Název veličiny</th>
-        <th>Značka</th>
-        <th>Jednotka</th>
-        <th>Značka jednotky</th>
-      </tr>
-    </thead>
-    <tbody>
+  <section aria-label="Tabulka základních elektrických veličin">
+    <h2>Základní elektrické veličiny</h2>
+    <input type="search" id="filterInput" placeholder="Filtrovat tabulku..." aria-label="Filtrovat tabulku základních veličin" />
+    <table id="unitsTable" aria-describedby="tableDesc">
+      <caption id="tableDesc">Tabulka základních elektrických veličin a jejich jednotek</caption>
+      <thead>
+        <tr>
+          <th>Název veličiny</th>
+          <th>Značka</th>
+          <th>Název jednotky</th>
+          <th>Značka jednotky</th>
+        </tr>
+      </thead>
+      <tbody>
       <tr><td>Elektrické napětí</td><td>U</td><td>Volt</td><td>V</td></tr>
       <tr><td>Elektrický proud</td><td>I</td><td>Ampér</td><td>A</td></tr>
       <tr><td>Elektrický odpor</td><td>R</td><td>Ohm</td><td>Ω</td></tr>
@@ -387,70 +174,51 @@
       <tr><td>Rovinný úhel</td><td>α</td><td>Radián</td><td>rad</td></tr>
       <tr><td>Prostorový úhel</td><td>Ω</td><td>Steradián</td><td>sr</td></tr>
       <tr><td>Termodynamická teplota</td><td>T</td><td>Kelvin</td><td>K</td></tr>
-    </tbody>
-  </table>
+      </tbody>
+    </table>
+  </section>
 
-  <h2>Popis základních veličin</h2>
+  <section aria-label="Interaktivní graf vztahu U, I a R">
+    <h2>Interaktivní graf vztahu napětí, proudu a odporu</h2>
+    <p>Vyberte dvě veličiny pomocí posuvníků, třetí se dopočítá podle Ohmova zákona <code>U = I × R</code>.</p>
 
-  <button class="accordion" aria-expanded="false" aria-controls="panel1" id="acc1">Napětí (U)</button>
-  <div class="panel" id="panel1" role="region" aria-labelledby="acc1">
-    <p>Napětí U je rozdíl dvou potenciálů ve voltech (V). To znamená, kolik voltů je jeden bod „chladnější“ než ten druhý. Zpravidla zjišťujeme přítomnost a velikost na některém bodu v obvodu proti zemi.</p>
-  </div>
+    <div class="slider-group">
+      <label for="sliderU">Napětí U [V]: <output id="outU">10</output> V</label>
+      <input type="range" id="sliderU" min="0" max="100" step="0.1" value="10" aria-valuemin="0" aria-valuemax="100" aria-valuenow="10" />
+    </div>
+    <div class="slider-group">
+      <label for="sliderI">Proud I [A]: <output id="outI">2</output> A</label>
+      <input type="range" id="sliderI" min="0" max="20" step="0.01" value="2" aria-valuemin="0" aria-valuemax="20" aria-valuenow="2" />
+    </div>
+    <div class="slider-group">
+      <label for="sliderR">Odpor R [Ω]: <output id="outR">5</output> Ω</label>
+      <input type="range" id="sliderR" min="0" max="50" step="0.01" value="5" aria-valuemin="0" aria-valuemax="50" aria-valuenow="5" />
+    </div>
 
-  <button class="accordion" aria-expanded="false" aria-controls="panel2" id="acc2">Proud (I)</button>
-  <div class="panel" id="panel2" role="region" aria-labelledby="acc2">
-    <p>Proud I je tok elektronů v obvodu udávaný ampéry (A). Vzniká v obvodu vnějším důsledkem přítomnosti napětí, tj. rozdílu potenciálů dvou bodů obvodu.</p>
-  </div>
+    <div id="graphContainer" aria-live="polite">
+      <canvas id="ohmGraph" width="600" height="300" role="img" aria-label="Graf vztahu napětí, proudu a odporu"></canvas>
+    </div>
+  </section>
 
-  <button class="accordion" aria-expanded="false" aria-controls="panel3" id="acc3">Odpor (R)</button>
-  <div class="panel" id="panel3" role="region" aria-labelledby="acc3">
-    <p>Odpor R je odpor (Ω), který vodič nebo součástka klade elektrickému proudu.</p>
-  </div>
+  <section aria-label="Ohmova kalkulačka">
+    <h2>Ohmova kalkulačka</h2>
+    <p>Zadejte libovolné dvě veličiny a kalkulačka spočítá třetí podle vzorce <code>U = I × R</code>.</p>
 
-  <h2>Interaktivní kvíz</h2>
-  <form class="quiz" aria-label="Elektrické veličiny kvíz" id="quizForm" novalidate>
+    <div class="calc">
+      <label for="inputVoltage">Napětí (U) ve voltech [V]</label>
+      <input type="number" id="inputVoltage" placeholder="Napětí v V" min="0" step="any" />
 
-    <label for="q1">1. Jaká je značka pro elektrické napětí?</label>
-    <input type="text" id="q1" name="q1" placeholder="např. U" autocomplete="off" aria-describedby="q1desc" />
-    <small id="q1desc" class="sr-only">Odpověď může být například 'U'</small>
+      <label for="inputCurrent">Proud (I) v ampérech [A]</label>
+      <input type="number" id="inputCurrent" placeholder="Proud v A" min="0" step="any" />
 
-    <label for="q2">2. Jaká je jednotka elektrického proudu?</label>
-    <select id="q2" name="q2" aria-describedby="q2desc">
-      <option value="">-- Vyberte odpověď --</option>
-      <option value="volt">Volt</option>
-      <option value="ampér">Ampér</option>
-      <option value="ohm">Ohm</option>
-      <option value="watt">Watt</option>
-    </select>
-    <small id="q2desc" class="sr-only">Vyberte správnou jednotku pro proud</small>
+      <label for="inputResistance">Odpor (R) v ohmech [Ω]</label>
+      <input type="number" id="inputResistance" placeholder="Odpor v Ω" min="0" step="any" />
 
-    <label for="q3">3. Co znamená prefix 'kilo' v číselné hodnotě?</label>
-    <input type="text" id="q3" name="q3" placeholder="např. 1000" autocomplete="off" aria-describedby="q3desc" />
-    <small id="q3desc" class="sr-only">Příklad: 1000, 10³, 10^3 jsou správné odpovědi</small>
+      <button id="calcBtn" aria-label="Spočítat chybějící veličinu">Spočítat</button>
 
-    <button type="submit" class="btn" id="submitBtn" disabled>Ověřit odpovědi</button>
-
-    <div class="result" role="alert" aria-live="polite" id="resultDiv"></div>
-  </form>
-
-  <h2>Ohmova kalkulačka</h2>
-  <div class="calc" aria-label="Ohmova kalkulačka">
-    <p>Zadejte libovolné dvě veličiny a kalkulačka spočítá tu třetí podle vzorce <strong>U = I × R</strong>.</p>
-
-    <label for="inputVoltage">Napětí (U) ve voltech [V]</label>
-    <input type="number" id="inputVoltage" placeholder="Napětí v V" min="0" step="any" />
-
-    <label for="inputCurrent">Proud (I) v ampérech [A]</label>
-    <input type="number" id="inputCurrent" placeholder="Proud v A" min="0" step="any" />
-
-    <label for="inputResistance">Odpor (R) v ohmech [Ω]</label>
-    <input type="number" id="inputResistance" placeholder="Odpor v Ω" min="0" step="any" />
-
-    <button id="calcBtn" aria-label="Spočítat chybějící veličinu">Spočítat</button>
-
-    <div class="calc-result" aria-live="polite" id="calcResult"></div>
-  </div>
-
+      <div class="calc-result" aria-live="polite" id="calcResult"></div>
+    </div>
+  </section>
 </main>
 
 <footer>
@@ -467,24 +235,7 @@
     toggleDark.setAttribute('aria-pressed', isDark);
   });
 
-  // --- Accordion ---
-  const accordions = document.querySelectorAll('.accordion');
-  accordions.forEach(acc => {
-    acc.addEventListener('click', () => {
-      const expanded = acc.getAttribute('aria-expanded') === 'true';
-      acc.setAttribute('aria-expanded', !expanded);
-      const panel = document.getElementById(acc.getAttribute('aria-controls'));
-      if(!expanded) {
-        panel.classList.add('open');
-        panel.style.maxHeight = panel.scrollHeight + "px";
-      } else {
-        panel.classList.remove('open');
-        panel.style.maxHeight = null;
-      }
-    });
-  });
-
-  // --- Vyhledávání v tabulce ---
+  // --- Filtrování tabulky ---
   const filterInput = document.getElementById('filterInput');
   const table = document.getElementById('unitsTable');
   filterInput.addEventListener('input', () => {
@@ -496,131 +247,224 @@
     }
   });
 
-  // --- Quiz logika ---
-  const quizForm = document.getElementById('quizForm');
-  const submitBtn = document.getElementById('submitBtn');
-  const resultDiv = document.getElementById('resultDiv');
+  // --- Interaktivní graf a posuvníky ---
+  const sliderU = document.getElementById('sliderU');
+  const sliderI = document.getElementById('sliderI');
+  const sliderR = document.getElementById('sliderR');
+  const outU = document.getElementById('outU');
+  const outI = document.getElementById('outI');
+  const outR = document.getElementById('outR');
+  const canvas = document.getElementById('ohmGraph');
+  const ctx = canvas.getContext('2d');
 
-  // Kontrola zda jsou všechny otázky alespoň trochu vyplněné (pro aktivaci tlačítka)
-  function checkInputsFilled() {
-    const q1Val = document.getElementById('q1').value.trim();
-    const q2Val = document.getElementById('q2').value;
-    const q3Val = document.getElementById('q3').value.trim();
-    submitBtn.disabled = !(q1Val && q2Val && q3Val);
+  // Pro sledování, které dva jsou "zadány" uživatelem
+  // Vždy dva z nich se mění, třetí je dopočítán
+  // Počáteční stav: všechny 3 hodnoty jsou vyplněné, ale uživatel může měnit posuvníky
+
+  // Pomocná funkce na vykreslení grafu
+  function drawGraph(U, I, R) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Nastavení pozadí
+    ctx.fillStyle = getComputedStyle(document.body).backgroundColor;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Osy
+    ctx.strokeStyle = getComputedStyle(document.body).color;
+    ctx.lineWidth = 2;
+
+    // Osa X - Proud (I) od 0 do 20 A (canvas.width = 600)
+    ctx.beginPath();
+    ctx.moveTo(50, canvas.height - 50);
+    ctx.lineTo(canvas.width - 20, canvas.height - 50);
+    ctx.stroke();
+
+    // Osa Y - Napětí (U) od 0 do 100 V (canvas.height = 300)
+    ctx.beginPath();
+    ctx.moveTo(50, canvas.height - 50);
+    ctx.lineTo(50, 20);
+    ctx.stroke();
+
+    // Popisky os
+    ctx.fillStyle = getComputedStyle(document.body).color;
+    ctx.font = "14px Arial";
+    ctx.fillText("Proud I [A]", canvas.width / 2, canvas.height - 15);
+    ctx.save();
+    ctx.translate(15, canvas.height / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText("Napětí U [V]", 0, 0);
+    ctx.restore();
+
+    // Vykreslíme čáru podle U = I × R
+    // Vypočteme body pro proud od 0 do max (20)
+    ctx.strokeStyle = 'rgba(217, 83, 79, 0.9)'; // červená pro napětí
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+
+    // Převod hodnot do souřadnic:
+    // x: proud I (0-20) -> 50-580 px
+    // y: napětí U (0-100) -> 250-20 px (invertováno)
+
+    for(let i=0; i<=20; i+=0.1) {
+      let u = i * R;
+      if (u > 100) break;
+      let x = 50 + (i / 20) * 530;
+      let y = canvas.height - 50 - (u / 100) * 230;
+      if(i===0){
+        ctx.moveTo(x,y);
+      } else {
+        ctx.lineTo(x,y);
+      }
+    }
+    ctx.stroke();
+
+    // Vykreslíme bod aktuální hodnoty (I,U)
+    let xCur = 50 + (I / 20) * 530;
+    let yCur = canvas.height - 50 - (U / 100) * 230;
+
+    // Bod proudu I
+    ctx.fillStyle = 'rgba(91, 192, 222, 1)'; // modrá
+    ctx.beginPath();
+    ctx.arc(xCur, canvas.height - 50, 6, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.fillText(`I = ${I.toFixed(2)} A`, xCur + 10, canvas.height - 55);
+
+    // Bod napětí U
+    ctx.fillStyle = 'rgba(217, 83, 79, 1)'; // červená
+    ctx.beginPath();
+    ctx.arc(50, yCur, 6, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.fillText(`U = ${U.toFixed(2)} V`, 10, yCur - 10);
+
+    // Bod odporu R (zobrazen jako text, ne v grafu)
+    ctx.fillStyle = getComputedStyle(document.body).color;
+    ctx.font = "16px Arial";
+    ctx.fillText(`Odpor R = ${R.toFixed(2)} Ω`, canvas.width - 180, 30);
   }
-  quizForm.addEventListener('input', checkInputsFilled);
 
-  quizForm.addEventListener('submit', (e) => {
-    e.preventDefault();
+  // Aktualizace hodnot a dopočet třetí veličiny podle toho, co se mění
+  // Abychom to udělali intuitivně, při změně jednoho slideru počítáme třetí podle Ohmova zákona
+  // U = I × R
 
-    // Načteme a "normalizujeme" odpovědi
-    const ans1 = document.getElementById('q1').value.trim().toUpperCase();
-    const q1Input = document.getElementById('q1');
-    const ans2 = document.getElementById('q2').value.toLowerCase();
-    const q2Input = document.getElementById('q2');
-    const ans3Raw = document.getElementById('q3').value.trim();
-    const q3Input = document.getElementById('q3');
+  // Logika: pokud uživatel mění U, tak po změně přepočteme R = U / I, pokud I != 0  
+  // pokud mění I, přepočteme R = U / I pokud I != 0  
+  // pokud mění R, přepočteme U = I × R
 
-    // Pro třetí otázku odstraníme mezery, převod na malá písmena
-    const ans3 = ans3Raw.replace(/\s/g, '').toLowerCase();
+  // Pro přepočty potřebujeme vědět, co uživatel právě mění. Přidáme event listeners.
 
-    let score = 0;
+  // Default hodnoty
+  let U_val = parseFloat(sliderU.value);
+  let I_val = parseFloat(sliderI.value);
+  let R_val = parseFloat(sliderR.value);
 
-    // Otázka 1: značka pro elektrické napětí je "U"
-    if(ans1 === "U") {
-      score++;
-      q1Input.classList.add('correct');
-      q1Input.classList.remove('incorrect');
-    } else {
-      q1Input.classList.add('incorrect');
-      q1Input.classList.remove('correct');
+  // Poslední posuvník, který uživatel měnil (pro rozhodnutí, co se přepočítá)
+  let lastChanged = 'R'; // inicializováno na R (když začínáme, je vše vyplněno)
+
+  function updateOutputs() {
+    outU.textContent = U_val.toFixed(2);
+    outI.textContent = I_val.toFixed(2);
+    outR.textContent = R_val.toFixed(2);
+
+    sliderU.setAttribute('aria-valuenow', U_val.toFixed(2));
+    sliderI.setAttribute('aria-valuenow', I_val.toFixed(2));
+    sliderR.setAttribute('aria-valuenow', R_val.toFixed(2));
+  }
+
+  function recalcFromLastChanged() {
+    if (lastChanged === 'U') {
+      if (I_val !== 0) {
+        R_val = U_val / I_val;
+      } else {
+        R_val = 0;
+      }
+      sliderR.value = R_val;
+    } else if (lastChanged === 'I') {
+      if (I_val !== 0) {
+        R_val = U_val / I_val;
+      } else {
+        R_val = 0;
+      }
+      sliderR.value = R_val;
+    } else if (lastChanged === 'R') {
+      U_val = I_val * R_val;
+      sliderU.value = U_val;
     }
+  }
 
-    // Otázka 2: jednotka proudu je "ampér"
-    if(ans2 === "ampér" || ans2 === "amper") {
-      score++;
-      q2Input.classList.add('correct');
-      q2Input.classList.remove('incorrect');
-    } else {
-      q2Input.classList.add('incorrect');
-      q2Input.classList.remove('correct');
-    }
-
-    // Otázka 3: prefix kilo znamená 1000 (akceptujeme "1000", "10³", "10^3", "10e3")
-    const validKilo = ["1000", "10³", "10^3", "10e3"];
-    if(validKilo.includes(ans3)) {
-      score++;
-      q3Input.classList.add('correct');
-      q3Input.classList.remove('incorrect');
-    } else {
-      q3Input.classList.add('incorrect');
-      q3Input.classList.remove('correct');
-    }
-
-    resultDiv.textContent = `Výsledek: ${score} / 3 správně.`;
-
-    if(score === 3) {
-      resultDiv.textContent += " 🎉 Skvěle! Všechny odpovědi jsou správné.";
-    } else if(score === 0) {
-      resultDiv.textContent += " 😕 Zkus to znovu, nevzdávej to!";
-    } else {
-      resultDiv.textContent += " 👍 Dobrá práce, můžeš to ještě vylepšit.";
-    }
+  sliderU.addEventListener('input', () => {
+    lastChanged = 'U';
+    U_val = parseFloat(sliderU.value);
+    // Přepočítáme R
+    recalcFromLastChanged();
+    updateOutputs();
+    drawGraph(U_val, I_val, R_val);
   });
 
+  sliderI.addEventListener('input', () => {
+    lastChanged = 'I';
+    I_val = parseFloat(sliderI.value);
+    recalcFromLastChanged();
+    updateOutputs();
+    drawGraph(U_val, I_val, R_val);
+  });
+
+  sliderR.addEventListener('input', () => {
+    lastChanged = 'R';
+    R_val = parseFloat(sliderR.value);
+    recalcFromLastChanged();
+    updateOutputs();
+    drawGraph(U_val, I_val, R_val);
+  });
+
+  // Inicialní vykreslení grafu a hodnoty
+  updateOutputs();
+  drawGraph(U_val, I_val, R_val);
+
   // --- Ohmova kalkulačka ---
-  const inputU = document.getElementById('inputVoltage');
-  const inputI = document.getElementById('inputCurrent');
-  const inputR = document.getElementById('inputResistance');
+  const inputVoltage = document.getElementById('inputVoltage');
+  const inputCurrent = document.getElementById('inputCurrent');
+  const inputResistance = document.getElementById('inputResistance');
   const calcBtn = document.getElementById('calcBtn');
   const calcResult = document.getElementById('calcResult');
 
-  calcBtn.addEventListener('click', (e) => {
-    e.preventDefault();
+  calcBtn.addEventListener('click', () => {
+    let U = parseFloat(inputVoltage.value);
+    let I = parseFloat(inputCurrent.value);
+    let R = parseFloat(inputResistance.value);
 
-    const U = parseFloat(inputU.value);
-    const I = parseFloat(inputI.value);
-    const R = parseFloat(inputR.value);
-
-    let filled = [!isNaN(U), !isNaN(I), !isNaN(R)].filter(Boolean).length;
-
-    if(filled < 2) {
-      calcResult.textContent = "Zadejte alespoň dvě veličiny.";
-      calcResult.style.color = "var(--clr-incorrect)";
+    // Spočítáme chybějící veličinu (pokud zadány dvě)
+    const inputs = [U, I, R].filter(v => !isNaN(v));
+    if(inputs.length < 2) {
+      calcResult.textContent = "Zadejte hodnoty alespoň dvou veličin.";
       return;
     }
 
-    // Logika výpočtu podle U = I * R
     if(isNaN(U)) {
-      if(I === 0 || R === 0) {
-        calcResult.textContent = "Proud nebo odpor nesmí být nulové pro výpočet napětí.";
-        calcResult.style.color = "var(--clr-incorrect)";
+      // U = I × R
+      if(I == 0 || R == 0){
+        calcResult.textContent = "Nelze spočítat napětí, protože proud nebo odpor je nula.";
         return;
       }
-      const voltage = I * R;
-      calcResult.style.color = "var(--clr-primary-dark)";
-      calcResult.textContent = `Napětí (U) = ${voltage.toFixed(3)} V`;
+      U = I * R;
+      calcResult.textContent = `Napětí (U) = ${U.toFixed(2)} V`;
     } else if(isNaN(I)) {
-      if(R === 0) {
-        calcResult.textContent = "Odpor nesmí být nulový pro výpočet proudu.";
-        calcResult.style.color = "var(--clr-incorrect)";
+      // I = U / R
+      if(R == 0){
+        calcResult.textContent = "Nelze spočítat proud, odpor nesmí být nula.";
         return;
       }
-      const current = U / R;
-      calcResult.style.color = "var(--clr-primary-dark)";
-      calcResult.textContent = `Proud (I) = ${current.toFixed(3)} A`;
+      I = U / R;
+      calcResult.textContent = `Proud (I) = ${I.toFixed(2)} A`;
     } else if(isNaN(R)) {
-      if(I === 0) {
-        calcResult.textContent = "Proud nesmí být nulový pro výpočet odporu.";
-        calcResult.style.color = "var(--clr-incorrect)";
+      // R = U / I
+      if(I == 0){
+        calcResult.textContent = "Nelze spočítat odpor, proud nesmí být nula.";
         return;
       }
-      const resistance = U / I;
-      calcResult.style.color = "var(--clr-primary-dark)";
-      calcResult.textContent = `Odpor (R) = ${resistance.toFixed(3)} Ω`;
+      R = U / I;
+      calcResult.textContent = `Odpor (R) = ${R.toFixed(2)} Ω`;
     } else {
-      calcResult.textContent = "Zadejte přesně dvě veličiny pro výpočet třetí.";
-      calcResult.style.color = "var(--clr-incorrect)";
+      calcResult.textContent = "Všechny tři veličiny jsou zadané, odpočítat nelze.";
     }
   });
 </script>
