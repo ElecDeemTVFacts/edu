@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Základy elektrických veličin – Interaktivně & Moderně</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
+  :root {
+    --clr-primary: #0057e7;
+    --clr-primary-dark: #003d99;
+    --clr-bg-light: #f0f4ff;
+    --clr-bg-dark: #121212;
+    --clr-text-light: #222;
+    --clr-text-dark: #eee;
+    --clr-correct: #16a34a;
+    --clr-incorrect: #dc2626;
+    --transition: 0.3s ease;
+  }
+
+  /* Tmavý režim */
+  body.dark {
+    background: var(--clr-bg-dark);
+    color: var(--clr-text-dark);
+  }
+  body.dark header, body.dark footer {
+    background: var(--clr-primary-dark);
+    color: var(--clr-text-dark);
+  }
+  body.dark table, body.dark .panel, body.dark .quiz {
+    background: #1e1e1e;
+    color: var(--clr-text-dark);
+    box-shadow: none;
+  }
+  body.dark th {
+    background: #333;
+  }
+  body.dark .accordion {
+    background: var(--clr-primary-dark);
+    color: var(--clr-text-dark);
+  }
+  body.dark .accordion:hover, body.dark .accordion.active {
+    background: #002466;
+  }
+  body.dark input, body.dark select {
+    background: #121212;
+    color: var(--clr-text-dark);
+    border-color: #555;
+  }
+  body.dark input.correct {
+    background: #064e03;
+    border-color: #16a34a;
+    color: #d1f5d3;
+  }
+  body.dark input.incorrect {
+    background: #4c0c0c;
+    border-color: #dc2626;
+    color: #fddede;
+  }
+
+  /* Reset & base */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    background: var(--clr-bg-light);
+    color: var(--clr-text-light);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header, footer {
+    background: var(--clr-primary);
+    color: white;
+    padding: 25px 15px;
+    text-align: center;
+    user-select: none;
+    box-shadow: 0 3px 8px rgb(0 0 0 / 0.2);
+  }
+  footer {
+    font-size: 0.85rem;
+    margin-top: auto;
+  }
+  header h1 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 2.3rem;
+  }
+
+  main {
+    max-width: 960px;
+    margin: 40px auto;
+    padding: 0 20px 60px;
+  }
+
+  h2 {
+    color: var(--clr-primary);
+    margin-top: 50px;
+    margin-bottom: 15px;
+    border-bottom: 3px solid var(--clr-primary);
+    padding-bottom: 8px;
+    font-weight: 700;
+  }
+
+  /* Tabulka */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 25px;
+    box-shadow: 0 0 20px rgb(0 0 0 / 0.05);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  th, td {
+    padding: 15px 10px;
+    border-bottom: 1px solid #cbd5e1;
+    text-align: center;
+    font-weight: 600;
+    background: #e9f0ff;
+    transition: background var(--transition);
+  }
+  th {
+    background: #cbd5e1;
+  }
+  tr:hover td {
+    background: #d6e0ff;
+  }
+
+  /* Accordion */
+  .accordion {
+    cursor: pointer;
+    background: var(--clr-primary);
+    color: white;
+    padding: 18px 25px;
+    margin: 10px 0 4px;
+    border: none;
+    text-align: left;
+    font-size: 1.15rem;
+    border-radius: 10px;
+    user-select: none;
+    transition: background-color var(--transition);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .accordion:hover, .accordion.active {
+    background: var(--clr-primary-dark);
+  }
+  .accordion:after {
+    content: '\u25BC'; /* down arrow */
+    font-size: 1rem;
+    transition: transform var(--transition);
+  }
+  .accordion.active:after {
+    transform: rotate(180deg);
+  }
+
+  .panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height var(--transition) ease-out, padding var(--transition) ease;
+    background: #dbe9ff;
+    border-radius: 0 0 10px 10px;
+    padding: 0 25px;
+    font-size: 1.05rem;
+    color: #222;
+  }
+  .panel.open {
+    padding: 18px 25px 20px;
+  }
+
+  /* Quiz */
+  .quiz {
+    background: white;
+    padding: 30px 40px;
+    border-radius: 15px;
+    box-shadow: 0 6px 20px rgb(0 87 231 / 0.25);
+    margin-top: 30px;
+  }
+  .quiz p {
+    font-weight: 700;
+    margin: 20px 0 8px;
+  }
+  .quiz input[type="text"], .quiz select {
+    font-size: 1rem;
+    padding: 12px 15px;
+    width: 100%;
+    max-width: 320px;
+    border: 2px solid #cbd5e1;
+    border-radius: 8px;
+    transition: border-color var(--transition), background var(--transition), color var(--transition);
+  }
+  .quiz input[type="text"]:focus, .quiz select:focus {
+    border-color: var(--clr-primary);
+    outline: none;
+  }
+  .btn {
+    background: var(--clr-primary);
+    color: white;
+    border: none;
+    padding: 16px 35px;
+    font-size: 1.15rem;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 25px;
+    box-shadow: 0 5px 18px rgb(0 87 231 / 0.4);
+    transition: background var(--transition);
+  }
+  .btn:hover:not(:disabled) {
+    background: var(--clr-primary-dark);
+  }
+  .btn:disabled {
+    background: #aaa;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+  .result {
+    margin-top: 28px;
+    font-size: 1.3rem;
+    font-weight: 700;
+  }
+
+  /* Feedback u odpovědí */
+  input.correct, select.correct {
+    border-color: var(--clr-correct);
+    background: #dcfce7;
+  }
+  input.incorrect, select.incorrect {
+    border-color: var(--clr-incorrect);
+    background: #fee2e2;
+  }
+
+  /* Vyhledávání tabulky */
+  #filterInput {
+    margin-bottom: 15px;
+    font-size: 1rem;
+    padding: 10px 15px;
+    width: 100%;
+    max-width: 300px;
+    border: 2px solid #cbd5e1;
+    border-radius: 8px;
+    transition: border-color var(--transition);
+  }
+  #filterInput:focus {
+    border-color: var(--clr-primary);
+    outline: none;
+  }
+
+  /* Ohmova kalkulačka */
+  .calc {
+    background: white;
+    padding: 30px 40px;
+    border-radius: 15px;
+    box-shadow: 0 6px 20px rgb(0 87 231 / 0.25);
+    margin-top: 50px;
+  }
+  .calc h3 {
+    margin-bottom: 20px;
+    color: var(--clr-primary);
+  }
+  .calc label {
+    display: block;
+    margin-top: 15px;
+    font-weight: 700;
+  }
+  .calc input {
+    margin-top: 8px;
+    padding: 10px 15px;
+    font-size: 1rem;
+    width: 100%;
+    max-width: 280px;
+    border-radius: 8px;
+    border: 2px solid #cbd5e1;
+    transition: border-color var(--transition);
+  }
+  .calc input:focus {
+    border-color: var(--clr-primary);
+    outline: none;
+  }
+  .calc button {
+    margin-top: 25px;
+    padding: 14px 30px;
+    font-size: 1.15rem;
+    border-radius: 8px;
+    background: var(--clr-primary);
+    color: white;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 5px 18px rgb(0 87 231 / 0.4);
+    transition: background var(--transition);
+  }
+  .calc button:hover {
+    background: var(--clr-primary-dark);
+  }
+  .calc .calc-result {
+    margin-top: 20px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--clr-primary-dark);
+  }
+
+  /* Toggle Dark Mode */
+  #toggleDark {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--clr-primary);
+    border: none;
+    padding: 10px 15px;
+    border-radius: 50px;
+    cursor: pointer;
+    color: white;
+    font-weight: 700;
+    box-shadow: 0 4px 15px rgb(0 87 231 / 0.5);
+    transition: background var(--transition);
+    z-index: 999;
+  }
+  #toggleDark:hover {
+    background: var(--clr-primary-dark);
+  }
+
+  /* Responsivita */
+  @media(max-width: 600px) {
+    h2 {
+      font-size: 1.4rem;
+    }
+    header h1 {
+      font-size: 1.6rem;
+    }
+    main {
+      margin: 30px 15px 60px;
+    }
+    .quiz, .calc {
+      padding: 25px 20px;
+    }
+    input, select {
+      max-width: 100%;
+    }
+  }
+
+</style>
+</head>
+<body>
+
+<button id="toggleDark" aria-pressed="false" aria-label="Přepnout tmavý režim">🌙 Tmavý režim</button>
+
+<header>
+  <h1>Základy elektrických veličin</h1>
+</header>
+
+<main>
+
+  <h2>Tabulka základních veličin</h2>
+
+  <input type="text" id="filterInput" placeholder="Hledej veličinu..." aria-label="Vyhledávání v tabulce základních veličin" />
+
+  <table aria-label="Základní elektrické veličiny" id="unitsTable">
+    <thead>
+      <tr>
+        <th>Název veličiny</th>
+        <th>Značka</th>
+        <th>Jednotka</th>
+        <th>Značka jednotky</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Elektrické napětí</td><td>U</td><td>Volt</td><td>V</td></tr>
+      <tr><td>Elektrický proud</td><td>I</td><td>Ampér</td><td>A</td></tr>
+      <tr><td>Elektrický odpor</td><td>R</td><td>Ohm</td><td>Ω</td></tr>
+      <tr><td>Zdánlivý odpor (impedance)</td><td>Z</td><td>Ohm</td><td>Ω</td></tr>
+      <tr><td>Reaktance kapacitní</td><td>Xc</td><td>Ohm</td><td>Ω</td></tr>
+      <tr><td>Reaktance induktivní</td><td>XL</td><td>Ohm</td><td>Ω</td></tr>
+      <tr><td>Elektrický výkon</td><td>P</td><td>Watt</td><td>W</td></tr>
+      <tr><td>Elektrická vodivost</td><td>G</td><td>Siemens</td><td>S</td></tr>
+      <tr><td>Elektrický náboj</td><td>Q</td><td>Coulomb</td><td>C</td></tr>
+      <tr><td>Kapacita</td><td>C</td><td>Farad</td><td>F</td></tr>
+      <tr><td>Indukčnost</td><td>L</td><td>Henry</td><td>H</td></tr>
+      <tr><td>Kmitočet</td><td>f</td><td>Hertz</td><td>Hz</td></tr>
+      <tr><td>Čas</td><td>t</td><td>Sekunda</td><td>s</td></tr>
+      <tr><td>Svítivost</td><td>I</td><td>Kandela</td><td>cd</td></tr>
+      <tr><td>Látkové množství</td><td>n</td><td>Mol</td><td>mol</td></tr>
+      <tr><td>Rovinný úhel</td><td>α</td><td>Radián</td><td>rad</td></tr>
+      <tr><td>Prostorový úhel</td><td>Ω</td><td>Steradián</td><td>sr</td></tr>
+      <tr><td>Termodynamická teplota</td><td>T</td><td>Kelvin</td><td>K</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Popis základních veličin</h2>
+
+  <button class="accordion" aria-expanded="false" aria-controls="panel1" id="acc1">Napětí (U)</button>
+  <div class="panel" id="panel1" role="region" aria-labelledby="acc1">
+    <p>Napětí U je rozdíl dvou potenciálů ve voltech (V). To znamená, kolik voltů je jeden bod „chladnější“ než ten druhý. Zpravidla zjišťujeme přítomnost a velikost na některém bodu v obvodu proti zemi.</p>
+  </div>
+
+  <button class="accordion" aria-expanded="false" aria-controls="panel2" id="acc2">Proud (I)</button>
+  <div class="panel" id="panel2" role="region" aria-labelledby="acc2">
+    <p>Proud I je tok elektronů v obvodu udávaný ampéry (A). Vzniká v obvodu vnějším důsledkem přítomnosti napětí, tj. rozdílu potenciálů dvou bodů obvodu.</p>
+  </div>
+
+  <button class="accordion" aria-expanded="false" aria-controls="panel3" id="acc3">Odpor (R)</button>
+  <div class="panel" id="panel3" role="region" aria-labelledby="acc3">
+    <p>Odpor R je odpor (Ω), který vodič nebo součástka klade elektrickému proudu.</p>
+  </div>
+
+  <h2>Interaktivní kvíz</h2>
+  <form class="quiz" aria-label="Elektrické veličiny kvíz" id="quizForm" novalidate>
+
+    <label for="q1">1. Jaká je značka pro elektrické napětí?</label>
+    <input type="text" id="q1" name="q1" placeholder="např. U" autocomplete="off" aria-describedby="q1desc" />
+    <small id="q1desc" class="sr-only">Odpověď může být například 'U'</small>
+
+    <label for="q2">2. Jaká je jednotka elektrického proudu?</label>
+    <select id="q2" name="q2" aria-describedby="q2desc">
+      <option value="">-- Vyberte odpověď --</option>
+      <option value="volt">Volt</option>
+      <option value="ampér">Ampér</option>
+      <option value="ohm">Ohm</option>
+      <option value="watt">Watt</option>
+    </select>
+    <small id="q2desc" class="sr-only">Vyberte správnou jednotku pro proud</small>
+
+    <label for="q3">3. Co znamená prefix 'kilo' v číselné hodnotě?</label>
+    <input type="text" id="q3" name="q3" placeholder="např. 1000" autocomplete="off" aria-describedby="q3desc" />
+    <small id="q3desc" class="sr-only">Příklad: 1000, 10³, 10^3 jsou správné odpovědi</small>
+
+    <button type="submit" class="btn" id="submitBtn" disabled>Ověřit odpovědi</button>
+
+    <div class="result" role="alert" aria-live="polite" id="resultDiv"></div>
+  </form>
+
+  <h2>Ohmova kalkulačka</h2>
+  <div class="calc" aria-label="Ohmova kalkulačka">
+    <p>Zadejte libovolné dvě veličiny a kalkulačka spočítá tu třetí podle vzorce <strong>U = I × R</strong>.</p>
+
+    <label for="inputVoltage">Napětí (U) ve voltech [V]</label>
+    <input type="number" id="inputVoltage" placeholder="Napětí v V" min="0" step="any" />
+
+    <label for="inputCurrent">Proud (I) v ampérech [A]</label>
+    <input type="number" id="inputCurrent" placeholder="Proud v A" min="0" step="any" />
+
+    <label for="inputResistance">Odpor (R) v ohmech [Ω]</label>
+    <input type="number" id="inputResistance" placeholder="Odpor v Ω" min="0" step="any" />
+
+    <button id="calcBtn" aria-label="Spočítat chybějící veličinu">Spočítat</button>
+
+    <div class="calc-result" aria-live="polite" id="calcResult"></div>
+  </div>
+
+</main>
+
+<footer>
+  &copy; 2025 Edukace Elektrika. Všechny práva vyhrazena.
+</footer>
+
+<script>
+  // --- Tmavý režim toggle ---
+  const toggleDark = document.getElementById('toggleDark');
+  toggleDark.addEventListener('click', () => {
+    document.body.classList.toggle('dark');
+    const isDark = document.body.classList.contains('dark');
+    toggleDark.textContent = isDark ? '☀️ Světlý režim' : '🌙 Tmavý režim';
+    toggleDark.setAttribute('aria-pressed', isDark);
+  });
+
+  // --- Accordion ---
+  const accordions = document.querySelectorAll('.accordion');
+  accordions.forEach(acc => {
+    acc.addEventListener('click', () => {
+      const expanded = acc.getAttribute('aria-expanded') === 'true';
+      acc.setAttribute('aria-expanded', !expanded);
+      const panel = document.getElementById(acc.getAttribute('aria-controls'));
+      if(!expanded) {
+        panel.classList.add('open');
+        panel.style.maxHeight = panel.scrollHeight + "px";
+      } else {
+        panel.classList.remove('open');
+        panel.style.maxHeight = null;
+      }
+    });
+  });
+
+  // --- Vyhledávání v tabulce ---
+  const filterInput = document.getElementById('filterInput');
+  const table = document.getElementById('unitsTable');
+  filterInput.addEventListener('input', () => {
+    const filter = filterInput.value.toLowerCase();
+    const trs = table.tBodies[0].rows;
+    for(let row of trs){
+      const text = row.textContent.toLowerCase();
+      row.style.display = text.includes(filter) ? '' : 'none';
+    }
+  });
+
+  // --- Quiz logika ---
+  const quizForm = document.getElementById('quizForm');
+  const submitBtn = document.getElementById('submitBtn');
+  const resultDiv = document.getElementById('resultDiv');
+
+  // Kontrola zda jsou všechny otázky alespoň trochu vyplněné (pro aktivaci tlačítka)
+  function checkInputsFilled() {
+    const q1Val = document.getElementById('q1').value.trim();
+    const q2Val = document.getElementById('q2').value;
+    const q3Val = document.getElementById('q3').value.trim();
+    submitBtn.disabled = !(q1Val && q2Val && q3Val);
+  }
+  quizForm.addEventListener('input', checkInputsFilled);
+
+  quizForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    // Načteme a "normalizujeme" odpovědi
+    const ans1 = document.getElementById('q1').value.trim().toUpperCase();
+    const q1Input = document.getElementById('q1');
+    const ans2 = document.getElementById('q2').value.toLowerCase();
+    const q2Input = document.getElementById('q2');
+    const ans3Raw = document.getElementById('q3').value.trim();
+    const q3Input = document.getElementById('q3');
+
+    // Pro třetí otázku odstraníme mezery, převod na malá písmena
+    const ans3 = ans3Raw.replace(/\s/g, '').toLowerCase();
+
+    let score = 0;
+
+    // Otázka 1: značka pro elektrické napětí je "U"
+    if(ans1 === "U") {
+      score++;
+      q1Input.classList.add('correct');
+      q1Input.classList.remove('incorrect');
+    } else {
+      q1Input.classList.add('incorrect');
+      q1Input.classList.remove('correct');
+    }
+
+    // Otázka 2: jednotka proudu je "ampér"
+    if(ans2 === "ampér" || ans2 === "amper") {
+      score++;
+      q2Input.classList.add('correct');
+      q2Input.classList.remove('incorrect');
+    } else {
+      q2Input.classList.add('incorrect');
+      q2Input.classList.remove('correct');
+    }
+
+    // Otázka 3: prefix kilo znamená 1000 (akceptujeme "1000", "10³", "10^3", "10e3")
+    const validKilo = ["1000", "10³", "10^3", "10e3"];
+    if(validKilo.includes(ans3)) {
+      score++;
+      q3Input.classList.add('correct');
+      q3Input.classList.remove('incorrect');
+    } else {
+      q3Input.classList.add('incorrect');
+      q3Input.classList.remove('correct');
+    }
+
+    resultDiv.textContent = `Výsledek: ${score} / 3 správně.`;
+
+    if(score === 3) {
+      resultDiv.textContent += " 🎉 Skvěle! Všechny odpovědi jsou správné.";
+    } else if(score === 0) {
+      resultDiv.textContent += " 😕 Zkus to znovu, nevzdávej to!";
+    } else {
+      resultDiv.textContent += " 👍 Dobrá práce, můžeš to ještě vylepšit.";
+    }
+  });
+
+  // --- Ohmova kalkulačka ---
+  const inputU = document.getElementById('inputVoltage');
+  const inputI = document.getElementById('inputCurrent');
+  const inputR = document.getElementById('inputResistance');
+  const calcBtn = document.getElementById('calcBtn');
+  const calcResult = document.getElementById('calcResult');
+
+  calcBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+
+    const U = parseFloat(inputU.value);
+    const I = parseFloat(inputI.value);
+    const R = parseFloat(inputR.value);
+
+    let filled = [!isNaN(U), !isNaN(I), !isNaN(R)].filter(Boolean).length;
+
+    if(filled < 2) {
+      calcResult.textContent = "Zadejte alespoň dvě veličiny.";
+      calcResult.style.color = "var(--clr-incorrect)";
+      return;
+    }
+
+    // Logika výpočtu podle U = I * R
+    if(isNaN(U)) {
+      if(I === 0 || R === 0) {
+        calcResult.textContent = "Proud nebo odpor nesmí být nulové pro výpočet napětí.";
+        calcResult.style.color = "var(--clr-incorrect)";
+        return;
+      }
+      const voltage = I * R;
+      calcResult.style.color = "var(--clr-primary-dark)";
+      calcResult.textContent = `Napětí (U) = ${voltage.toFixed(3)} V`;
+    } else if(isNaN(I)) {
+      if(R === 0) {
+        calcResult.textContent = "Odpor nesmí být nulový pro výpočet proudu.";
+        calcResult.style.color = "var(--clr-incorrect)";
+        return;
+      }
+      const current = U / R;
+      calcResult.style.color = "var(--clr-primary-dark)";
+      calcResult.textContent = `Proud (I) = ${current.toFixed(3)} A`;
+    } else if(isNaN(R)) {
+      if(I === 0) {
+        calcResult.textContent = "Proud nesmí být nulový pro výpočet odporu.";
+        calcResult.style.color = "var(--clr-incorrect)";
+        return;
+      }
+      const resistance = U / I;
+      calcResult.style.color = "var(--clr-primary-dark)";
+      calcResult.textContent = `Odpor (R) = ${resistance.toFixed(3)} Ω`;
+    } else {
+      calcResult.textContent = "Zadejte přesně dvě veličiny pro výpočet třetí.";
+      calcResult.style.color = "var(--clr-incorrect)";
+    }
+  });
+</script>
+
+</body>
+</html>
