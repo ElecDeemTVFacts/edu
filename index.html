@@ -11,9 +11,6 @@
     --clr-primary: #007acc;
     --clr-secondary: #005f99;
     --clr-table-header: #004466;
-    --clr-volt: #d9534f;
-    --clr-current: #5bc0de;
-    --clr-resistance: #5cb85c;
     --clr-bg-dark: #121212;
     --clr-text-dark: #eee;
   }
@@ -29,16 +26,28 @@
     color: var(--clr-text-dark);
   }
   header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    text-align: center;
     margin-bottom: 1rem;
   }
   h1 {
-    margin: 0;
-    font-size: 1.8rem;
+    margin: 0.5rem 0;
+    font-size: 2rem;
+  }
+  nav {
+    margin: 1rem 0;
+  }
+  nav a {
+    margin: 0 0.8rem;
+    text-decoration: none;
+    font-weight: 600;
+    color: var(--clr-primary);
+  }
+  nav a:hover {
+    color: var(--clr-secondary);
+    text-decoration: underline;
   }
   button#toggleDark {
+    margin-top: 0.5rem;
     background: var(--clr-primary);
     color: white;
     border: none;
@@ -95,43 +104,38 @@
     background: #222;
     border-color: #555;
   }
-  .calc {
-    border: 1px solid #ddd;
-    padding: 1rem;
-    border-radius: 6px;
-    margin-bottom: 3rem;
-    background: #fff;
+
+  /* --- Studijní materiály --- */
+  .study-materials {
+    max-width: 900px;
+    margin: 2rem auto;
   }
-  body.dark .calc {
+  .study-materials h2 {
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+    border-left: 6px solid var(--clr-primary);
+    padding-left: 0.5rem;
+  }
+  .card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    border: 1px solid #ddd;
+  }
+  body.dark .card {
     background: #1a1a1a;
     border-color: #333;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
   }
-  .calc label {
-    display: block;
-    margin: 0.5rem 0 0.2rem;
-  }
-  .calc input[type="number"] {
-    width: 100%;
-    padding: 0.3rem 0.5rem;
-    font-size: 1rem;
-  }
-  .calc button {
-    margin-top: 1rem;
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    background: var(--clr-primary);
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  .calc button:hover {
-    background: var(--clr-secondary);
-  }
-  .calc-result {
-    margin-top: 1rem;
-    font-weight: 700;
+  .card h3 {
+    margin-top: 0;
     color: var(--clr-primary);
+  }
+  .card h4 {
+    margin-bottom: 0.5rem;
+    color: var(--clr-secondary);
   }
 </style>
 </head>
@@ -139,10 +143,15 @@
 <header>
   <h1>Základy elektrické veličiny</h1>
   <button id="toggleDark" aria-pressed="false" aria-label="Přepnout tmavý režim">🌙 Tmavý režim</button>
+  <nav>
+    <a href="#tabulka">Tabulka</a>
+    <a href="#graf">Graf</a>
+    <a href="#materialy">Studijní materiály</a>
+  </nav>
 </header>
 
 <main>
-  <section aria-label="Tabulka základních elektrických veličin">
+  <section id="tabulka" aria-label="Tabulka základních elektrických veličin">
     <h2>Základní elektrické veličiny</h2>
     <input type="search" id="filterInput" placeholder="Filtrovat tabulku..." aria-label="Filtrovat tabulku základních veličin" />
     <table id="unitsTable" aria-describedby="tableDesc">
@@ -159,65 +168,84 @@
       <tr><td>Elektrické napětí</td><td>U</td><td>Volt</td><td>V</td></tr>
       <tr><td>Elektrický proud</td><td>I</td><td>Ampér</td><td>A</td></tr>
       <tr><td>Elektrický odpor</td><td>R</td><td>Ohm</td><td>Ω</td></tr>
-      <tr><td>Zdánlivý odpor (impedance)</td><td>Z</td><td>Ohm</td><td>Ω</td></tr>
-      <tr><td>Reaktance kapacitní</td><td>Xc</td><td>Ohm</td><td>Ω</td></tr>
-      <tr><td>Reaktance induktivní</td><td>XL</td><td>Ohm</td><td>Ω</td></tr>
       <tr><td>Elektrický výkon</td><td>P</td><td>Watt</td><td>W</td></tr>
-      <tr><td>Elektrická vodivost</td><td>G</td><td>Siemens</td><td>S</td></tr>
-      <tr><td>Elektrický náboj</td><td>Q</td><td>Coulomb</td><td>C</td></tr>
       <tr><td>Kapacita</td><td>C</td><td>Farad</td><td>F</td></tr>
       <tr><td>Indukčnost</td><td>L</td><td>Henry</td><td>H</td></tr>
       <tr><td>Kmitočet</td><td>f</td><td>Hertz</td><td>Hz</td></tr>
-      <tr><td>Čas</td><td>t</td><td>Sekunda</td><td>s</td></tr>
-      <tr><td>Svítivost</td><td>I</td><td>Kandela</td><td>cd</td></tr>
-      <tr><td>Látkové množství</td><td>n</td><td>Mol</td><td>mol</td></tr>
-      <tr><td>Rovinný úhel</td><td>α</td><td>Radián</td><td>rad</td></tr>
-      <tr><td>Prostorový úhel</td><td>Ω</td><td>Steradián</td><td>sr</td></tr>
-      <tr><td>Termodynamická teplota</td><td>T</td><td>Kelvin</td><td>K</td></tr>
       </tbody>
     </table>
   </section>
 
-  <section aria-label="Interaktivní graf vztahu U, I a R">
+  <section id="graf" aria-label="Interaktivní graf vztahu U, I a R">
     <h2>Interaktivní graf vztahu napětí, proudu a odporu</h2>
     <p>Vyberte dvě veličiny pomocí posuvníků, třetí se dopočítá podle Ohmova zákona <code>U = I × R</code>.</p>
 
     <div class="slider-group">
       <label for="sliderU">Napětí U [V]: <output id="outU">10</output> V</label>
-      <input type="range" id="sliderU" min="0" max="100" step="0.1" value="10" aria-valuemin="0" aria-valuemax="100" aria-valuenow="10" />
+      <input type="range" id="sliderU" min="0" max="100" step="0.1" value="10" />
     </div>
     <div class="slider-group">
       <label for="sliderI">Proud I [A]: <output id="outI">2</output> A</label>
-      <input type="range" id="sliderI" min="0" max="20" step="0.01" value="2" aria-valuemin="0" aria-valuemax="20" aria-valuenow="2" />
+      <input type="range" id="sliderI" min="0" max="20" step="0.01" value="2" />
     </div>
     <div class="slider-group">
       <label for="sliderR">Odpor R [Ω]: <output id="outR">5</output> Ω</label>
-      <input type="range" id="sliderR" min="0" max="50" step="0.01" value="5" aria-valuemin="0" aria-valuemax="50" aria-valuenow="5" />
+      <input type="range" id="sliderR" min="0" max="50" step="0.01" value="5" />
     </div>
 
     <div id="graphContainer" aria-live="polite">
-      <canvas id="ohmGraph" width="600" height="300" role="img" aria-label="Graf vztahu napětí, proudu a odporu"></canvas>
+      <canvas id="ohmGraph" width="600" height="300"></canvas>
     </div>
   </section>
 
-  <section aria-label="Ohmova kalkulačka">
-    <h2>Ohmova kalkulačka</h2>
-    <p>Zadejte libovolné dvě veličiny a kalkulačka spočítá třetí podle vzorce <code>U = I × R</code>.</p>
+  <!-- Studijní materiály -->
+  <section id="materialy" class="study-materials">
+    <h2>📘 Studijní materiály</h2>
 
-    <div class="calc">
-      <label for="inputVoltage">Napětí (U) ve voltech [V]</label>
-      <input type="number" id="inputVoltage" placeholder="Napětí v V" min="0" step="any" />
+    <article class="card">
+      <h3>Strana 1 – Základy</h3>
+      <p><strong>ZE – 5. 9. 25</strong></p>
+      <p>
+        Nejpoužívanější veličiny elektrických veličin a jejich jednotky mají mnoho dalších odvozených možností od každé z nich. 
+        Rozlišují se např. hodnoty špičkové, střední, efektivní, protokeltové, střídavé aj. 
+        Speciální značky se používají především proto, aby bylo možné u dané veličiny identifikovat, že souvisí (či nesouvisí) 
+        s časovou hodnotou, označením, či s jinou odvozenou hodnotou.
+      </p>
+      <p>Základní elektrické veličiny jsou obsaženy v tzv. soustavě SI.</p>
+    </article>
 
-      <label for="inputCurrent">Proud (I) v ampérech [A]</label>
-      <input type="number" id="inputCurrent" placeholder="Proud v A" min="0" step="any" />
+    <article class="card">
+      <h3>Strana 2 – Příklad a přepočty jednotek</h3>
+      <p><strong>Příklad:</strong><br>
+        I = 10 A <br>
+        I = fyzikální veličina (elektrický proud) <br>
+        10 = číselná hodnota <br>
+        A = fyzikální jednotka (ampér)
+      </p>
 
-      <label for="inputResistance">Odpor (R) v ohmech [Ω]</label>
-      <input type="number" id="inputResistance" placeholder="Odpor v Ω" min="0" step="any" />
+      <h4>Přepočty jednotek</h4>
+      <ul>
+        <li>piko (p) = 10⁻¹²</li>
+        <li>nano (n) = 10⁻⁹</li>
+        <li>mikro (µ) = 10⁻⁶</li>
+        <li>mili (m) = 10⁻³</li>
+        <li>kilo (k) = 10³</li>
+        <li>mega (M) = 10⁶</li>
+        <li>giga (G) = 10⁹</li>
+        <li>tera (T) = 10¹²</li>
+      </ul>
+    </article>
 
-      <button id="calcBtn" aria-label="Spočítat chybějící veličinu">Spočítat</button>
-
-      <div class="calc-result" aria-live="polite" id="calcResult"></div>
-    </div>
+    <article class="card">
+      <h3>Stručná charakteristika základních veličin</h3>
+      <p><strong>Napětí</strong> – rozdíl dvou potenciálů ve voltech (V). Udává, kolik „síly“ má elektrické pole k posunutí náboje.</p>
+      <p><strong>Proud</strong> – tok elektronů v obvodu udávaný ampéry (A). Vzniká v důsledku přítomnosti napětí.</p>
+      <p><strong>Odpor</strong> – odpor (Ω), který vodič nebo součástka klade elektrickému proudu.</p>
+      <p><strong>Výkon</strong> – výkon P ve wattech (W) vyjadřuje rychlost přeměny elektrické energie, platí P = U × I.</p>
+      <p><strong>Kapacita</strong> – schopnost vodiče nebo kondenzátoru uchovávat elektrický náboj, jednotka farad (F).</p>
+      <p><strong>Indukčnost</strong> – schopnost vodiče nebo cívky vytvářet elektromagnetické pole, jednotka henry (H).</p>
+      <p><strong>Kmitočet</strong> – udává počet kmitů za sekundu, jednotka hertz (Hz).</p>
+    </article>
   </section>
 </main>
 
@@ -257,217 +285,87 @@
   const canvas = document.getElementById('ohmGraph');
   const ctx = canvas.getContext('2d');
 
-  // Pro sledování, které dva jsou "zadány" uživatelem
-  // Vždy dva z nich se mění, třetí je dopočítán
-  // Počáteční stav: všechny 3 hodnoty jsou vyplněné, ale uživatel může měnit posuvníky
+  let U_val = parseFloat(sliderU.value);
+  let I_val = parseFloat(sliderI.value);
+  let R_val = parseFloat(sliderR.value);
+  let lastChanged = 'R';
 
-  // Pomocná funkce na vykreslení grafu
   function drawGraph(U, I, R) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Nastavení pozadí
     ctx.fillStyle = getComputedStyle(document.body).backgroundColor;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Osy
     ctx.strokeStyle = getComputedStyle(document.body).color;
     ctx.lineWidth = 2;
 
-    // Osa X - Proud (I) od 0 do 20 A (canvas.width = 600)
     ctx.beginPath();
     ctx.moveTo(50, canvas.height - 50);
     ctx.lineTo(canvas.width - 20, canvas.height - 50);
     ctx.stroke();
 
-    // Osa Y - Napětí (U) od 0 do 100 V (canvas.height = 300)
     ctx.beginPath();
     ctx.moveTo(50, canvas.height - 50);
     ctx.lineTo(50, 20);
     ctx.stroke();
 
-    // Popisky os
     ctx.fillStyle = getComputedStyle(document.body).color;
     ctx.font = "14px Arial";
-    ctx.fillText("Proud I [A]", canvas.width / 2, canvas.height - 15);
+    ctx.fillText("Proud I [A]", canvas.width/2 - 30, canvas.height - 20);
     ctx.save();
-    ctx.translate(15, canvas.height / 2);
-    ctx.rotate(-Math.PI / 2);
+    ctx.translate(20, canvas.height/2 + 30);
+    ctx.rotate(-Math.PI/2);
     ctx.fillText("Napětí U [V]", 0, 0);
     ctx.restore();
 
-    // Vykreslíme čáru podle U = I × R
-    // Vypočteme body pro proud od 0 do max (20)
-    ctx.strokeStyle = 'rgba(217, 83, 79, 0.9)'; // červená pro napětí
-    ctx.lineWidth = 3;
     ctx.beginPath();
-
-    // Převod hodnot do souřadnic:
-    // x: proud I (0-20) -> 50-580 px
-    // y: napětí U (0-100) -> 250-20 px (invertováno)
-
-    for(let i=0; i<=20; i+=0.1) {
-      let u = i * R;
-      if (u > 100) break;
-      let x = 50 + (i / 20) * 530;
-      let y = canvas.height - 50 - (u / 100) * 230;
-      if(i===0){
-        ctx.moveTo(x,y);
-      } else {
-        ctx.lineTo(x,y);
-      }
+    ctx.moveTo(50, canvas.height - 50);
+    let scaleX = (canvas.width - 70)/20;
+    let scaleY = (canvas.height - 70)/100;
+    for(let i=0;i<=20;i++){
+      let I = i;
+      let U_calc = I * R;
+      let x = 50 + I * scaleX;
+      let y = canvas.height - 50 - U_calc * scaleY;
+      if(i===0) ctx.moveTo(x,y);
+      else ctx.lineTo(x,y);
     }
     ctx.stroke();
 
-    // Vykreslíme bod aktuální hodnoty (I,U)
-    let xCur = 50 + (I / 20) * 530;
-    let yCur = canvas.height - 50 - (U / 100) * 230;
-
-    // Bod proudu I
-    ctx.fillStyle = 'rgba(91, 192, 222, 1)'; // modrá
+    let x = 50 + I*scaleX;
+    let y = canvas.height - 50 - U*scaleY;
     ctx.beginPath();
-    ctx.arc(xCur, canvas.height - 50, 6, 0, 2 * Math.PI);
+    ctx.arc(x,y,6,0,2*Math.PI);
+    ctx.fillStyle = "red";
     ctx.fill();
-    ctx.fillText(`I = ${I.toFixed(2)} A`, xCur + 10, canvas.height - 55);
 
-    // Bod napětí U
-    ctx.fillStyle = 'rgba(217, 83, 79, 1)'; // červená
-    ctx.beginPath();
-    ctx.arc(50, yCur, 6, 0, 2 * Math.PI);
-    ctx.fill();
-    ctx.fillText(`U = ${U.toFixed(2)} V`, 10, yCur - 10);
-
-    // Bod odporu R (zobrazen jako text, ne v grafu)
     ctx.fillStyle = getComputedStyle(document.body).color;
-    ctx.font = "16px Arial";
-    ctx.fillText(`Odpor R = ${R.toFixed(2)} Ω`, canvas.width - 180, 30);
+    ctx.fillText(`U=${U.toFixed(1)} V`, x+10, y-10);
+    ctx.fillText(`I=${I.toFixed(2)} A`, x+10, y+10);
+    ctx.fillText(`R=${R.toFixed(2)} Ω`, x+10, y+25);
   }
 
-  // Aktualizace hodnot a dopočet třetí veličiny podle toho, co se mění
-  // Abychom to udělali intuitivně, při změně jednoho slideru počítáme třetí podle Ohmova zákona
-  // U = I × R
-
-  // Logika: pokud uživatel mění U, tak po změně přepočteme R = U / I, pokud I != 0  
-  // pokud mění I, přepočteme R = U / I pokud I != 0  
-  // pokud mění R, přepočteme U = I × R
-
-  // Pro přepočty potřebujeme vědět, co uživatel právě mění. Přidáme event listeners.
-
-  // Default hodnoty
-  let U_val = parseFloat(sliderU.value);
-  let I_val = parseFloat(sliderI.value);
-  let R_val = parseFloat(sliderR.value);
-
-  // Poslední posuvník, který uživatel měnil (pro rozhodnutí, co se přepočítá)
-  let lastChanged = 'R'; // inicializováno na R (když začínáme, je vše vyplněno)
-
-  function updateOutputs() {
-    outU.textContent = U_val.toFixed(2);
-    outI.textContent = I_val.toFixed(2);
-    outR.textContent = R_val.toFixed(2);
-
-    sliderU.setAttribute('aria-valuenow', U_val.toFixed(2));
-    sliderI.setAttribute('aria-valuenow', I_val.toFixed(2));
-    sliderR.setAttribute('aria-valuenow', R_val.toFixed(2));
-  }
-
-  function recalcFromLastChanged() {
-    if (lastChanged === 'U') {
-      if (I_val !== 0) {
-        R_val = U_val / I_val;
-      } else {
-        R_val = 0;
-      }
+  function updateValues() {
+    U_val = parseFloat(sliderU.value);
+    I_val = parseFloat(sliderI.value);
+    R_val = parseFloat(sliderR.value);
+    if(lastChanged === 'U' && I_val !== 0){
+      R_val = U_val / I_val;
       sliderR.value = R_val;
-    } else if (lastChanged === 'I') {
-      if (I_val !== 0) {
-        R_val = U_val / I_val;
-      } else {
-        R_val = 0;
-      }
-      sliderR.value = R_val;
-    } else if (lastChanged === 'R') {
+    } else if(lastChanged === 'I' && R_val !== 0){
+      U_val = I_val * R_val;
+      sliderU.value = U_val;
+    } else if(lastChanged === 'R'){
       U_val = I_val * R_val;
       sliderU.value = U_val;
     }
+    outU.textContent = U_val.toFixed(1);
+    outI.textContent = I_val.toFixed(2);
+    outR.textContent = R_val.toFixed(2);
+    drawGraph(U_val, I_val, R_val);
   }
-
-  sliderU.addEventListener('input', () => {
-    lastChanged = 'U';
-    U_val = parseFloat(sliderU.value);
-    // Přepočítáme R
-    recalcFromLastChanged();
-    updateOutputs();
-    drawGraph(U_val, I_val, R_val);
-  });
-
-  sliderI.addEventListener('input', () => {
-    lastChanged = 'I';
-    I_val = parseFloat(sliderI.value);
-    recalcFromLastChanged();
-    updateOutputs();
-    drawGraph(U_val, I_val, R_val);
-  });
-
-  sliderR.addEventListener('input', () => {
-    lastChanged = 'R';
-    R_val = parseFloat(sliderR.value);
-    recalcFromLastChanged();
-    updateOutputs();
-    drawGraph(U_val, I_val, R_val);
-  });
-
-  // Inicialní vykreslení grafu a hodnoty
-  updateOutputs();
-  drawGraph(U_val, I_val, R_val);
-
-  // --- Ohmova kalkulačka ---
-  const inputVoltage = document.getElementById('inputVoltage');
-  const inputCurrent = document.getElementById('inputCurrent');
-  const inputResistance = document.getElementById('inputResistance');
-  const calcBtn = document.getElementById('calcBtn');
-  const calcResult = document.getElementById('calcResult');
-
-  calcBtn.addEventListener('click', () => {
-    let U = parseFloat(inputVoltage.value);
-    let I = parseFloat(inputCurrent.value);
-    let R = parseFloat(inputResistance.value);
-
-    // Spočítáme chybějící veličinu (pokud zadány dvě)
-    const inputs = [U, I, R].filter(v => !isNaN(v));
-    if(inputs.length < 2) {
-      calcResult.textContent = "Zadejte hodnoty alespoň dvou veličin.";
-      return;
-    }
-
-    if(isNaN(U)) {
-      // U = I × R
-      if(I == 0 || R == 0){
-        calcResult.textContent = "Nelze spočítat napětí, protože proud nebo odpor je nula.";
-        return;
-      }
-      U = I * R;
-      calcResult.textContent = `Napětí (U) = ${U.toFixed(2)} V`;
-    } else if(isNaN(I)) {
-      // I = U / R
-      if(R == 0){
-        calcResult.textContent = "Nelze spočítat proud, odpor nesmí být nula.";
-        return;
-      }
-      I = U / R;
-      calcResult.textContent = `Proud (I) = ${I.toFixed(2)} A`;
-    } else if(isNaN(R)) {
-      // R = U / I
-      if(I == 0){
-        calcResult.textContent = "Nelze spočítat odpor, proud nesmí být nula.";
-        return;
-      }
-      R = U / I;
-      calcResult.textContent = `Odpor (R) = ${R.toFixed(2)} Ω`;
-    } else {
-      calcResult.textContent = "Všechny tři veličiny jsou zadané, odpočítat nelze.";
-    }
-  });
+  sliderU.addEventListener('input', ()=>{ lastChanged='U'; updateValues(); });
+  sliderI.addEventListener('input', ()=>{ lastChanged='I'; updateValues(); });
+  sliderR.addEventListener('input', ()=>{ lastChanged='R'; updateValues(); });
+  updateValues();
 </script>
-
 </body>
 </html>
